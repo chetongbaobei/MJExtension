@@ -131,17 +131,27 @@ static const char MJIgnoredCodingPropertyNamesKey = '\0';
 
 #pragma mark - block和方法处理:存储block的返回值
 + (void)mj_setupBlockReturnValue:(id (^)(void))block key:(const char *)key {
-    MJExtensionSemaphoreCreate
-    MJ_LOCK(mje_signalSemaphore);
-    if (block) {
-        objc_setAssociatedObject(self, key, block(), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    } else {
-        objc_setAssociatedObject(self, key, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+//    MJExtensionSemaphoreCreate
+//    MJ_LOCK(mje_signalSemaphore);
+//    if (block) {
+//        objc_setAssociatedObject(self, key, block(), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+//    } else {
+//        objc_setAssociatedObject(self, key, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+//    }
+//
+//    // 清空数据
+//    [[self mj_classDictForKey:key] removeAllObjects];
+//    MJ_UNLOCK(mje_signalSemaphore);
+    @synchronized (self) {
+        if (block) {
+            objc_setAssociatedObject(self, key, block(), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        } else {
+            objc_setAssociatedObject(self, key, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        }
+        
+        // 清空数据
+        [[self mj_classDictForKey:key] removeAllObjects];
     }
-    
-    // 清空数据
-    [[self mj_classDictForKey:key] removeAllObjects];
-    MJ_UNLOCK(mje_signalSemaphore);
 }
 
 + (NSMutableArray *)mj_totalObjectsWithSelector:(SEL)selector key:(const char *)key

@@ -178,10 +178,13 @@ dispatch_once_t mje_onceTokenSemaphore;
 
 #pragma mark - 新值配置
 + (void)mj_setupNewValueFromOldValue:(MJNewValueFromOldValue)newValueFormOldValue {
-    MJExtensionSemaphoreCreate
-    MJ_LOCK(mje_signalSemaphore);
-    objc_setAssociatedObject(self, &MJNewValueFromOldValueKey, newValueFormOldValue, OBJC_ASSOCIATION_COPY_NONATOMIC);
-    MJ_UNLOCK(mje_signalSemaphore);
+//    MJExtensionSemaphoreCreate
+//    MJ_LOCK(mje_signalSemaphore);
+//    objc_setAssociatedObject(self, &MJNewValueFromOldValueKey, newValueFormOldValue, OBJC_ASSOCIATION_COPY_NONATOMIC);
+//    MJ_UNLOCK(mje_signalSemaphore);
+    @synchronized (self) {
+        objc_setAssociatedObject(self, &MJNewValueFromOldValueKey, newValueFormOldValue, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    }
 }
 
 + (id)mj_getNewValueFromObject:(__unsafe_unretained id)object oldValue:(__unsafe_unretained id)oldValue property:(MJProperty *__unsafe_unretained)property{
@@ -206,10 +209,13 @@ dispatch_once_t mje_onceTokenSemaphore;
 }
 
 + (void)mj_removeCachedProperties {
-    MJExtensionSemaphoreCreate
-    MJ_LOCK(mje_signalSemaphore);
-    [[self mj_propertyDictForKey:&MJCachedPropertiesKey] removeAllObjects];
-    MJ_UNLOCK(mje_signalSemaphore);
+//    MJExtensionSemaphoreCreate
+//    MJ_LOCK(mje_signalSemaphore);
+//    [[self mj_propertyDictForKey:&MJCachedPropertiesKey] removeAllObjects];
+//    MJ_UNLOCK(mje_signalSemaphore);
+    @synchronized (self) {
+        [[self mj_propertyDictForKey:&MJCachedPropertiesKey] removeAllObjects];
+    }
 }
 
 #pragma mark - array model class配置
@@ -229,12 +235,17 @@ dispatch_once_t mje_onceTokenSemaphore;
 }
 
 + (void)mj_setupReplacedKeyFromPropertyName121:(MJReplacedKeyFromPropertyName121)replacedKeyFromPropertyName121 {
-    MJExtensionSemaphoreCreate
-    MJ_LOCK(mje_signalSemaphore);
-    objc_setAssociatedObject(self, &MJReplacedKeyFromPropertyName121Key, replacedKeyFromPropertyName121, OBJC_ASSOCIATION_COPY_NONATOMIC);
-    
-    [[self mj_propertyDictForKey:&MJCachedPropertiesKey] removeAllObjects];
-    MJ_UNLOCK(mje_signalSemaphore);
+//    MJExtensionSemaphoreCreate
+//    MJ_LOCK(mje_signalSemaphore);
+//    objc_setAssociatedObject(self, &MJReplacedKeyFromPropertyName121Key, replacedKeyFromPropertyName121, OBJC_ASSOCIATION_COPY_NONATOMIC);
+//
+//    [[self mj_propertyDictForKey:&MJCachedPropertiesKey] removeAllObjects];
+//    MJ_UNLOCK(mje_signalSemaphore);
+    @synchronized (self) {
+        objc_setAssociatedObject(self, &MJReplacedKeyFromPropertyName121Key, replacedKeyFromPropertyName121, OBJC_ASSOCIATION_COPY_NONATOMIC);
+        
+        [[self mj_propertyDictForKey:&MJCachedPropertiesKey] removeAllObjects];
+    }
 }
 @end
 #pragma clang diagnostic pop
